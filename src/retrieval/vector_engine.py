@@ -21,10 +21,7 @@ class VectorEngine:
         """Embed a single query string using HuggingFace API."""
         response = requests.post(self.api_url, headers=self.headers, json={"inputs": [query]})
         if response.status_code != 200:
-             # Fallback to local if API fails (good for local dev)
-             from sentence_transformers import SentenceTransformer
-             model = SentenceTransformer(settings.embedding_model)
-             return model.encode(query, show_progress_bar=False).tolist()
+             raise Exception(f"HuggingFace API Error ({response.status_code}): {response.text}")
         
         return response.json()[0]
 

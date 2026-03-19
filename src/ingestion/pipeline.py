@@ -63,13 +63,7 @@ class IngestionPipeline:
         if response.status_code == 200:
             return response.json()
         
-        # Fallback to local model
-        if self.local_model is None:
-            from sentence_transformers import SentenceTransformer
-            self.local_model = SentenceTransformer(settings.embedding_model)
-            
-        embeddings = self.local_model.encode(texts, show_progress_bar=False)
-        return embeddings.tolist()
+        raise Exception(f"HuggingFace API Error ({response.status_code}): {response.text}")
 
     def _save_bm25_corpus(self, chunks: list[Chunk]) -> None:
         """Save chunk texts and metadata for BM25 index reconstruction."""

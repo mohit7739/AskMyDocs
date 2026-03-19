@@ -30,12 +30,8 @@ class ReRanker:
                 return results
             else:
                 raise Exception(f"API Error {response.status_code}")
-        except Exception:
-            # Fallback to local
-            if self.local_model is None:
-                from sentence_transformers import CrossEncoder
-                self.local_model = CrossEncoder(settings.reranker_model, max_length=512)
-            return self.local_model.predict(pairs)
+        except Exception as e:
+            raise Exception(f"Re-ranking API failed: {str(e)}")
 
     def rerank(self, query: str, chunks: list[dict]) -> list[dict]:
         """
