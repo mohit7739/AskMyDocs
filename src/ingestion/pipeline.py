@@ -58,7 +58,8 @@ class IngestionPipeline:
             return []
         
         import requests
-        response = requests.post(self.api_url, headers=self.headers, json={"inputs": texts})
+        payload = {"inputs": texts, "parameters": {"truncation": True}}
+        response = requests.post(self.api_url, headers=self.headers, json=payload)
         
         if response.status_code == 200:
             return response.json()

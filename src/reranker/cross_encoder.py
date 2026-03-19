@@ -18,7 +18,8 @@ class ReRanker:
     def _get_scores(self, pairs: list[dict]) -> list[float]:
         """Get scores from HF API."""
         try:
-            response = requests.post(self.api_url, headers=self.headers, json={"inputs": pairs})
+            payload = {"inputs": pairs, "parameters": {"truncation": True}}
+            response = requests.post(self.api_url, headers=self.headers, json=payload)
             if response.status_code == 200:
                 results = response.json()
                 # HF API returns [[{"label": "LABEL_0", "score": 0.9}, {"score": 0.5}]]
@@ -29,7 +30,7 @@ class ReRanker:
                     return [r["score"] for r in results]
                 return results
             else:
-                raise Exception(f"API Error {response.status_code}")
+                raise Exception(f"API Error {response.status_code}: {response.text}")
         except Exception as e:
             raise Exception(f"Re-ranking API failed: {str(e)}")
 

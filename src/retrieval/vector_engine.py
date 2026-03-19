@@ -19,7 +19,8 @@ class VectorEngine:
 
     def _embed_query(self, query: str) -> list[float]:
         """Embed a single query string using HuggingFace API."""
-        response = requests.post(self.api_url, headers=self.headers, json={"inputs": [query]})
+        payload = {"inputs": [query], "parameters": {"truncation": True}}
+        response = requests.post(self.api_url, headers=self.headers, json=payload)
         if response.status_code != 200:
              raise Exception(f"HuggingFace API Error ({response.status_code}): {response.text}")
         
