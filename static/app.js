@@ -48,7 +48,13 @@
 
             if (!response.ok) {
                 const error = await response.json();
-                throw new Error(error.detail || 'Query failed');
+                let errorMsg = 'Query failed';
+                if (typeof error.detail === 'string') {
+                    errorMsg = error.detail;
+                } else if (Array.isArray(error.detail)) {
+                    errorMsg = error.detail.map(e => e.msg || e.message || JSON.stringify(e)).join(', ');
+                }
+                throw new Error(errorMsg);
             }
 
             const data = await response.json();
@@ -177,7 +183,13 @@
 
             if (!response.ok) {
                 const error = await response.json();
-                throw new Error(error.detail || 'Ingestion failed');
+                let errorMsg = 'Ingestion failed';
+                if (typeof error.detail === 'string') {
+                    errorMsg = error.detail;
+                } else if (Array.isArray(error.detail)) {
+                    errorMsg = error.detail.map(e => e.msg || e.message || JSON.stringify(e)).join(', ');
+                }
+                throw new Error(errorMsg);
             }
 
             const data = await response.json();
