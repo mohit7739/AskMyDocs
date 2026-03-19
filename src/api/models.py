@@ -7,8 +7,8 @@ class QueryRequest(BaseModel):
     """Request body for the /api/query endpoint."""
     question: str = Field(
         ...,
-        min_length=3,
-        max_length=1000,
+        min_length=1,
+        max_length=2000,
         description="The question to ask about the documents.",
         examples=["How do I define path parameters in FastAPI?"],
     )
