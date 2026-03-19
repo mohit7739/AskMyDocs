@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: askmydocs
+    runtime: docker
+    repo: https://github.com/mohit7739/AskMyDocs.git
+    branch: main
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false  # You'll set this manually in Render dashboard
+      - key: CHROMA_PERSIST_DIR
+        value: ./chroma_data
+      - key: DOCS_DIR
+        value: ./docs
