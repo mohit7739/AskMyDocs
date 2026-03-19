@@ -24,7 +24,7 @@ class IngestionPipeline:
         )
 
         # HuggingFace API Setup
-        self.api_url = f"https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/{settings.embedding_model}"
+        self.api_url = f"https://router.huggingface.co/hf-inference/models/{settings.embedding_model}"
         self.headers = {"Authorization": f"Bearer {settings.hf_token}"} if settings.hf_token else {}
         self.local_model = None
 

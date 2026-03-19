@@ -12,21 +12,21 @@ class ReRanker:
     def __init__(self):
         self.top_n = settings.reranker_top_n
         self.threshold = settings.relevance_threshold
-        self.api_url = f"https://api-inference.huggingface.co/models/{settings.reranker_model}"
+        self.api_url = f"https://router.huggingface.co/hf-inference/models/{settings.reranker_model}"
         self.headers = {"Authorization": f"Bearer {settings.hf_token}"} if settings.hf_token else {}
-        self.local_model = None
 
-    def _get_scores(self, pairs: list[tuple[str, str]]) -> list[float]:
-        """Get scores from HF API or fallback to local model."""
+    def _get_scores(self, pairs: list[dict]) -> list[float]:
+        """Get scores from HF API."""
         try:
             response = requests.post(self.api_url, headers=self.headers, json={"inputs": pairs})
             if response.status_code == 200:
                 results = response.json()
-                # HF API returns [{"label": "LABEL_0", "score": 0.9}, ...] or just floats
-                if results and isinstance(results[0], dict) and "score" in results[0]:
+                # HF API returns [[{"label": "LABEL_0", "score": 0.9}, {"score": 0.5}]]
+                if isinstance(results, list) and len(results) == 1 and isinstance(results[0], list):
+                    return [r["score"] if isinstance(r, dict) else r for r in results[0]]
+                # Or [{"label": "LABEL_0", "score": 0.9}, ...]
+                elif results and isinstance(results[0], dict) and "score" in results[0]:
                     return [r["score"] for r in results]
-                elif results and isinstance(results[0], list):
-                    return [r[0]["score"] if isinstance(r[0], dict) else r[0] for r in results]
                 return results
             else:
                 raise Exception(f"API Error {response.status_code}")
@@ -50,7 +50,7 @@ class ReRanker:
             return []
 
         # Prepare query-document pairs
-        pairs = [[query, chunk["text"]] for chunk in chunks]
+        pairs = [{"text": query, "text_pair": chunk["text"]} for chunk in chunks]
 
         # Score all pairs
         scores = self._get_scores(pairs)

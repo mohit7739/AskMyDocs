@@ -14,7 +14,7 @@ class VectorEngine:
             name="documents",
             metadata={"hnsw:space": "cosine"},
         )
-        self.api_url = f"https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/{settings.embedding_model}"
+        self.api_url = f"https://router.huggingface.co/hf-inference/models/{settings.embedding_model}"
         self.headers = {"Authorization": f"Bearer {settings.hf_token}"} if settings.hf_token else {}
 
     def _embed_query(self, query: str) -> list[float]:

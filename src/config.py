@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     llm_model: str = "llama-3.3-70b-versatile"
 
     # --- Local Embeddings (sentence-transformers, no API needed) ---
-    embedding_model: str = "all-MiniLM-L6-v2"
+    embedding_model: str = "BAAI/bge-small-en-v1.5"
     
     # --- HuggingFace API (Fallback for low RAM environments) ---
     hf_token: str = ""
@@ -31,7 +31,7 @@ class Settings(BaseSettings):
     rrf_k: int = 60  # Reciprocal Rank Fusion constant
 
     # --- Re-ranker ---
-    reranker_model: str = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    reranker_model: str = "BAAI/bge-reranker-base"
     reranker_top_n: int = 5
     relevance_threshold: float = 0.3
 
