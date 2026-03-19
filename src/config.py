@@ -18,7 +18,8 @@ class Settings(BaseSettings):
     hf_token: str = ""
 
     # --- Paths ---
-    chroma_persist_dir: str = "./chroma_data"
+    # Vercel's serverless environment requires writes to occur in /tmp
+    chroma_persist_dir: str = "/tmp/chroma_data"
     docs_dir: str = "./docs"
 
     # --- Chunking ---
