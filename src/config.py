@@ -13,6 +13,9 @@ class Settings(BaseSettings):
 
     # --- Local Embeddings (sentence-transformers, no API needed) ---
     embedding_model: str = "all-MiniLM-L6-v2"
+    
+    # --- HuggingFace API (Fallback for low RAM environments) ---
+    hf_token: str = ""
 
     # --- Paths ---
     chroma_persist_dir: str = "./chroma_data"

@@ -20,9 +20,10 @@ COPY README.md ./
 # Install Python dependencies
 RUN pip install --no-cache-dir .
 
-# Pre-download ML models during build (faster cold starts)
-RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
-RUN python -c "from sentence_transformers import CrossEncoder; CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')"
+# Pre-download ML models during build (faster cold starts, fallback only)
+# Commented out since Render OOMs with local models, we use HF API instead.
+# RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
+# RUN python -c "from sentence_transformers import CrossEncoder; CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')"
 
 # Create data directories
 RUN mkdir -p chroma_data

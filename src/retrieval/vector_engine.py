@@ -1,16 +1,14 @@
 """Vector-based semantic search engine using ChromaDB + local embeddings."""
 
 import chromadb
-from sentence_transformers import SentenceTransformer
+import requests
 
 from src.config import settings
 
-
 class VectorEngine:
-    """Semantic search using ChromaDB with local sentence-transformer embeddings."""
+    """Semantic search using ChromaDB with HuggingFace Inference API embeddings."""
 
     def __init__(self):
-        self.embed_model = SentenceTransformer(settings.embedding_model)
         self.chroma_client = chromadb.PersistentClient(
             path=str(settings.chroma_path)
         )
@@ -18,11 +16,19 @@ class VectorEngine:
             name="documents",
             metadata={"hnsw:space": "cosine"},
         )
+        self.api_url = f"https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/{settings.embedding_model}"
+        self.headers = {"Authorization": f"Bearer {settings.hf_token}"} if settings.hf_token else {}
 
     def _embed_query(self, query: str) -> list[float]:
-        """Embed a single query string."""
-        embedding = self.embed_model.encode(query, show_progress_bar=False)
-        return embedding.tolist()
+        """Embed a single query string using HuggingFace API."""
+        response = requests.post(self.api_url, headers=self.headers, json={"inputs": [query]})
+        if response.status_code != 200:
+             # Fallback to local if API fails (good for local dev)
+             from sentence_transformers import SentenceTransformer
+             model = SentenceTransformer(settings.embedding_model)
+             return model.encode(query, show_progress_bar=False).tolist()
+        
+        return response.json()[0]
 
     def search(self, query: str, top_k: int | None = None) -> list[dict]:
         """

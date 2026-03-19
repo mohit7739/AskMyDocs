@@ -5,7 +5,6 @@ import json
 from pathlib import Path
 
 import chromadb
-from sentence_transformers import SentenceTransformer
 
 from src.config import settings
 from src.ingestion.chunker import RecursiveChunker, Chunk
@@ -24,8 +23,10 @@ class IngestionPipeline:
             chunk_overlap=settings.chunk_overlap,
         )
 
-        # Local embedding model (no API needed)
-        self.embed_model = SentenceTransformer(settings.embedding_model)
+        # HuggingFace API Setup
+        self.api_url = f"https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/{settings.embedding_model}"
+        self.headers = {"Authorization": f"Bearer {settings.hf_token}"} if settings.hf_token else {}
+        self.local_model = None
 
         # ChromaDB
         self.chroma_client = chromadb.PersistentClient(
@@ -54,10 +55,22 @@ class IngestionPipeline:
         return set()
 
     def _embed_texts(self, texts: list[str]) -> list[list[float]]:
-        """Embed a batch of texts using local sentence-transformers."""
+        """Embed a batch of texts using HuggingFace API."""
         if not texts:
             return []
-        embeddings = self.embed_model.encode(texts, show_progress_bar=False)
+        
+        import requests
+        response = requests.post(self.api_url, headers=self.headers, json={"inputs": texts})
+        
+        if response.status_code == 200:
+            return response.json()
+        
+        # Fallback to local model
+        if self.local_model is None:
+            from sentence_transformers import SentenceTransformer
+            self.local_model = SentenceTransformer(settings.embedding_model)
+            
+        embeddings = self.local_model.encode(texts, show_progress_bar=False)
         return embeddings.tolist()
 
     def _save_bm25_corpus(self, chunks: list[Chunk]) -> None:
