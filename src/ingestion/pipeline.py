@@ -29,9 +29,7 @@ class IngestionPipeline:
         self.local_model = None
 
         # ChromaDB
-        self.chroma_client = chromadb.PersistentClient(
-            path=str(settings.chroma_path)
-        )
+        self.chroma_client = chromadb.Client()
         self.collection = self.chroma_client.get_or_create_collection(
             name="documents",
             metadata={"hnsw:space": "cosine"},

@@ -30,6 +30,16 @@ _generator: RAGGenerator | None = None
 async def lifespan(app: FastAPI):
     """Initialize services on startup."""
     global _generator
+    
+    # Run ingestion automatically on startup for Vercel (ephemeral DB)
+    try:
+        logger.info("Starting automatic document ingestion...")
+        pipeline = IngestionPipeline()
+        stats = pipeline.run()
+        logger.info(f"Ingestion complete: {stats}")
+    except Exception as e:
+        logger.warning(f"Auto-ingestion skipped or failed: {e}")
+
     _generator = RAGGenerator()
     logger.info("RAG Generator initialized.")
     yield
@@ -130,7 +140,7 @@ async def ingest_documents():
 async def get_stats():
     """Get index statistics."""
     try:
-        client = chromadb.PersistentClient(path=str(settings.chroma_path))
+        client = chromadb.Client()
         collection = client.get_or_create_collection("documents")
         count = collection.count()
     except Exception:
@@ -142,11 +152,14 @@ async def get_stats():
     )
 
 
-# Serve static files (frontend)
+# Serve static files (frontend) - Note: Vercel routes /static/ directly via vercel.json
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/")
 async def serve_frontend():
     """Serve the main frontend HTML page."""
-    return FileResponse("static/index.html")
+    import os
+    # When deployed to Vercel, the current working directory is the project root
+    html_path = os.path.join(os.getcwd(), "static", "index.html")
+    return FileResponse(html_path)

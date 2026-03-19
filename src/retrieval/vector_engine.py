@@ -9,9 +9,7 @@ class VectorEngine:
     """Semantic search using ChromaDB with HuggingFace Inference API embeddings."""
 
     def __init__(self):
-        self.chroma_client = chromadb.PersistentClient(
-            path=str(settings.chroma_path)
-        )
+        self.chroma_client = chromadb.Client()
         self.collection = self.chroma_client.get_or_create_collection(
             name="documents",
             metadata={"hnsw:space": "cosine"},
