@@ -1,0 +1,422 @@
+[
+    {
+        "id": 1,
+        "question": "How do I install FastAPI?",
+        "expected_answer": "You can install FastAPI with pip using 'pip install fastapi'. You also need an ASGI server like Uvicorn: 'pip install uvicorn[standard]'.",
+        "expected_sources": ["01_getting_started.md"],
+        "category": "factual"
+    },
+    {
+        "id": 2,
+        "question": "What command do I use to run a FastAPI application?",
+        "expected_answer": "Use 'uvicorn main:app --reload' to run a FastAPI application during development. The --reload flag makes the server restart after code changes.",
+        "expected_sources": ["01_getting_started.md"],
+        "category": "factual"
+    },
+    {
+        "id": 3,
+        "question": "What are the key features of FastAPI?",
+        "expected_answer": "FastAPI's key features include: fast performance (on par with NodeJS and Go), fast to code (200-300% speed increase), fewer bugs (40% reduction), intuitive editor support, easy to learn, minimal code duplication, robust production-ready code, and standards-based (OpenAPI and JSON Schema).",
+        "expected_sources": ["01_getting_started.md"],
+        "category": "factual"
+    },
+    {
+        "id": 4,
+        "question": "Where can I access the interactive API documentation?",
+        "expected_answer": "Swagger UI is available at /docs and ReDoc at /redoc. Both are generated automatically from Python type annotations.",
+        "expected_sources": ["01_getting_started.md"],
+        "category": "factual"
+    },
+    {
+        "id": 5,
+        "question": "How do I define path parameters in FastAPI?",
+        "expected_answer": "You declare path parameters using the same syntax as Python format strings, e.g., @app.get('/items/{item_id}'). The value will be passed to the function as an argument.",
+        "expected_sources": ["02_path_parameters.md"],
+        "category": "factual"
+    },
+    {
+        "id": 6,
+        "question": "How does FastAPI validate path parameter types?",
+        "expected_answer": "You declare the type using Python type annotations (e.g., item_id: int). FastAPI automatically validates the parameter type and returns a clear error if the type doesn't match.",
+        "expected_sources": ["02_path_parameters.md"],
+        "category": "factual"
+    },
+    {
+        "id": 7,
+        "question": "Why does the order of path operations matter in FastAPI?",
+        "expected_answer": "Path operations are evaluated in order. Fixed paths like /users/me must be declared before parameterized paths like /users/{user_id} to ensure they are matched first.",
+        "expected_sources": ["02_path_parameters.md"],
+        "category": "conceptual"
+    },
+    {
+        "id": 8,
+        "question": "How can I restrict path parameters to predefined values?",
+        "expected_answer": "Use a Python Enum class that inherits from str and Enum. The available values will be shown in the automatic API documentation.",
+        "expected_sources": ["02_path_parameters.md"],
+        "category": "factual"
+    },
+    {
+        "id": 9,
+        "question": "How do I handle path parameters that contain slashes?",
+        "expected_answer": "Use Starlette's path converter with the syntax {file_path:path}, which matches the rest of the URL path including slashes.",
+        "expected_sources": ["02_path_parameters.md"],
+        "category": "factual"
+    },
+    {
+        "id": 10,
+        "question": "How are query parameters defined in FastAPI?",
+        "expected_answer": "Function parameters that are not part of the path parameters are automatically interpreted as query parameters. They can have default values.",
+        "expected_sources": ["03_query_parameters.md"],
+        "category": "factual"
+    },
+    {
+        "id": 11,
+        "question": "How do I make a query parameter optional?",
+        "expected_answer": "Set the default value to None using the type annotation str | None = None.",
+        "expected_sources": ["03_query_parameters.md"],
+        "category": "factual"
+    },
+    {
+        "id": 12,
+        "question": "How does FastAPI handle boolean query parameters?",
+        "expected_answer": "FastAPI accepts 1, true, on, yes (case-insensitive) as True, and 0, false, off, no as False for boolean parameters.",
+        "expected_sources": ["03_query_parameters.md"],
+        "category": "factual"
+    },
+    {
+        "id": 13,
+        "question": "How do I make a query parameter required?",
+        "expected_answer": "Don't set a default value for the parameter. FastAPI will return an error if the required query parameter is not provided.",
+        "expected_sources": ["03_query_parameters.md"],
+        "category": "factual"
+    },
+    {
+        "id": 14,
+        "question": "How do I send data as a request body in FastAPI?",
+        "expected_answer": "Use Pydantic models to declare the request body. FastAPI will read the body as JSON, validate it against the model, convert types, and provide the model instance.",
+        "expected_sources": ["04_request_body.md"],
+        "category": "factual"
+    },
+    {
+        "id": 15,
+        "question": "How does FastAPI distinguish between path parameters, query parameters, and request body?",
+        "expected_answer": "Parameters declared in the path are path parameters. Singular types (int, float, str, bool) are query parameters. Pydantic model types are request body.",
+        "expected_sources": ["04_request_body.md"],
+        "category": "conceptual"
+    },
+    {
+        "id": 16,
+        "question": "How do I add field validation to a Pydantic model?",
+        "expected_answer": "Use the Field function from Pydantic. For example, Field(gt=0) for greater than zero, or Field(max_length=300) for string length limits.",
+        "expected_sources": ["04_request_body.md"],
+        "category": "factual"
+    },
+    {
+        "id": 17,
+        "question": "What is the purpose of response_model in FastAPI?",
+        "expected_answer": "response_model filters and validates output data, generates API documentation, and can exclude sensitive fields. Only fields in the response model are included in the response.",
+        "expected_sources": ["05_response_models.md"],
+        "category": "conceptual"
+    },
+    {
+        "id": 18,
+        "question": "How do I exclude unset fields from a response?",
+        "expected_answer": "Use response_model_exclude_unset=True in the path operation decorator. This excludes fields that were not explicitly set.",
+        "expected_sources": ["05_response_models.md"],
+        "category": "factual"
+    },
+    {
+        "id": 19,
+        "question": "How do I set a custom HTTP status code for a response?",
+        "expected_answer": "Use the status_code parameter in the path operation decorator, e.g., @app.post('/items/', status_code=201). FastAPI also provides constants in fastapi.status.",
+        "expected_sources": ["05_response_models.md"],
+        "category": "factual"
+    },
+    {
+        "id": 20,
+        "question": "What is dependency injection in FastAPI?",
+        "expected_answer": "Dependency injection allows path operation functions to declare things they require to work (dependencies), and FastAPI provides those dependencies. Use Depends() in function parameter defaults.",
+        "expected_sources": ["06_dependencies.md"],
+        "category": "conceptual"
+    },
+    {
+        "id": 21,
+        "question": "Can I use classes as dependencies in FastAPI?",
+        "expected_answer": "Yes, you can use classes as dependencies. Create a class with __init__ that accepts parameters, and use Depends(ClassName) in your path operation.",
+        "expected_sources": ["06_dependencies.md"],
+        "category": "factual"
+    },
+    {
+        "id": 22,
+        "question": "How do sub-dependencies work in FastAPI?",
+        "expected_answer": "Dependencies can have their own dependencies. FastAPI resolves the entire dependency tree automatically.",
+        "expected_sources": ["06_dependencies.md"],
+        "category": "conceptual"
+    },
+    {
+        "id": 23,
+        "question": "How do I add dependencies to a path operation without using the return value?",
+        "expected_answer": "Add dependencies to the path operation decorator using the dependencies parameter: @app.get('/items/', dependencies=[Depends(verify_token)]).",
+        "expected_sources": ["06_dependencies.md"],
+        "category": "factual"
+    },
+    {
+        "id": 24,
+        "question": "How do dependencies with yield work?",
+        "expected_answer": "Dependencies with yield run code before yield to set up (e.g., open DB connection), then yield the resource, then run cleanup code after the response is sent (e.g., close DB connection).",
+        "expected_sources": ["06_dependencies.md"],
+        "category": "conceptual"
+    },
+    {
+        "id": 25,
+        "question": "How do I implement OAuth2 password authentication in FastAPI?",
+        "expected_answer": "Use OAuth2PasswordBearer with a tokenUrl, create a token endpoint that accepts OAuth2PasswordRequestForm, and use Depends to get the current user in protected routes.",
+        "expected_sources": ["07_security.md"],
+        "category": "factual"
+    },
+    {
+        "id": 26,
+        "question": "What does OAuth2PasswordBearer do?",
+        "expected_answer": "OAuth2PasswordBearer looks for the Authorization header, checks if the value starts with Bearer, and returns the token string. It's used as a dependency.",
+        "expected_sources": ["07_security.md"],
+        "category": "conceptual"
+    },
+    {
+        "id": 27,
+        "question": "How do I implement API key authentication?",
+        "expected_answer": "Use the APIKeyHeader class from fastapi.security. Create a dependency that verifies the API key from the X-API-Key header and raises HTTPException if invalid.",
+        "expected_sources": ["07_security.md"],
+        "category": "factual"
+    },
+    {
+        "id": 28,
+        "question": "How do I configure CORS in FastAPI?",
+        "expected_answer": "Add CORSMiddleware to the application with app.add_middleware(CORSMiddleware, allow_origins=[...], allow_methods=['*'], allow_headers=['*']).",
+        "expected_sources": ["07_security.md"],
+        "category": "factual"
+    },
+    {
+        "id": 29,
+        "question": "How do I create custom middleware in FastAPI?",
+        "expected_answer": "Use the @app.middleware('http') decorator. The middleware function receives the request and a call_next function. You can modify both the request and response.",
+        "expected_sources": ["08_middleware.md"],
+        "category": "factual"
+    },
+    {
+        "id": 30,
+        "question": "What built-in middleware does FastAPI provide?",
+        "expected_answer": "FastAPI provides CORS middleware, Trusted Host middleware, HTTPS Redirect middleware, and GZip middleware through Starlette.",
+        "expected_sources": ["08_middleware.md"],
+        "category": "factual"
+    },
+    {
+        "id": 31,
+        "question": "In what order is middleware applied in FastAPI?",
+        "expected_answer": "Middleware is applied in reverse order of how they are added. The last middleware added is the first to handle the request.",
+        "expected_sources": ["08_middleware.md"],
+        "category": "conceptual"
+    },
+    {
+        "id": 32,
+        "question": "How do I create class-based middleware?",
+        "expected_answer": "Extend BaseHTTPMiddleware from Starlette, implement the dispatch method with request and call_next parameters, and add it with app.add_middleware().",
+        "expected_sources": ["08_middleware.md"],
+        "category": "factual"
+    },
+    {
+        "id": 33,
+        "question": "How do I raise an HTTP error in FastAPI?",
+        "expected_answer": "Raise an HTTPException with the desired status_code and detail message. FastAPI automatically returns the appropriate HTTP response.",
+        "expected_sources": ["09_error_handling.md"],
+        "category": "factual"
+    },
+    {
+        "id": 34,
+        "question": "How do I create custom exception handlers?",
+        "expected_answer": "Use the @app.exception_handler(ExceptionClass) decorator to register a handler function that takes request and exception parameters and returns a response.",
+        "expected_sources": ["09_error_handling.md"],
+        "category": "factual"
+    },
+    {
+        "id": 35,
+        "question": "How do I override FastAPI's default validation error handler?",
+        "expected_answer": "Register an exception handler for RequestValidationError using @app.exception_handler(RequestValidationError) and return a custom JSONResponse.",
+        "expected_sources": ["09_error_handling.md"],
+        "category": "factual"
+    },
+    {
+        "id": 36,
+        "question": "How do I test a FastAPI application?",
+        "expected_answer": "Use TestClient from fastapi.testclient (built on httpx). Create a TestClient instance with your app and use it to make HTTP requests in test functions.",
+        "expected_sources": ["10_testing.md"],
+        "category": "factual"
+    },
+    {
+        "id": 37,
+        "question": "How do I override dependencies in tests?",
+        "expected_answer": "Use app.dependency_overrides dictionary to map the original dependency to a mock. Set app.dependency_overrides[original_dep] = mock_dep, and clear after tests.",
+        "expected_sources": ["10_testing.md"],
+        "category": "factual"
+    },
+    {
+        "id": 38,
+        "question": "How do I run async tests with FastAPI?",
+        "expected_answer": "Use pytest-asyncio with httpx.AsyncClient and ASGITransport. Decorate test functions with @pytest.mark.anyio and use async with AsyncClient.",
+        "expected_sources": ["10_testing.md"],
+        "category": "factual"
+    },
+    {
+        "id": 39,
+        "question": "How do I deploy a FastAPI application with Gunicorn?",
+        "expected_answer": "Use Gunicorn with Uvicorn workers: 'gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000'.",
+        "expected_sources": ["11_deployment.md"],
+        "category": "factual"
+    },
+    {
+        "id": 40,
+        "question": "How do I configure environment variables in FastAPI?",
+        "expected_answer": "Use Pydantic's BaseSettings class which can load from a .env file. Declare settings as class attributes with types and defaults.",
+        "expected_sources": ["11_deployment.md"],
+        "category": "factual"
+    },
+    {
+        "id": 41,
+        "question": "How do I handle startup and shutdown events in FastAPI?",
+        "expected_answer": "Use the lifespan parameter with an async context manager. Code before yield runs on startup, code after yield runs on shutdown.",
+        "expected_sources": ["11_deployment.md"],
+        "category": "factual"
+    },
+    {
+        "id": 42,
+        "question": "How do I use background tasks in FastAPI?",
+        "expected_answer": "Use the BackgroundTasks parameter. Call background_tasks.add_task(function, args) to schedule tasks that run after the response is sent.",
+        "expected_sources": ["11_deployment.md"],
+        "category": "factual"
+    },
+    {
+        "id": 43,
+        "question": "What is the difference between path parameters and query parameters?",
+        "expected_answer": "Path parameters are part of the URL path (declared with curly braces in the route), while query parameters are appended after ? in the URL. Parameters declared in the path are path parameters; singular types not in the path are query parameters.",
+        "expected_sources": ["02_path_parameters.md", "03_query_parameters.md"],
+        "category": "multi-hop"
+    },
+    {
+        "id": 44,
+        "question": "How do authentication and dependency injection work together in FastAPI?",
+        "expected_answer": "Authentication in FastAPI uses the dependency injection system. OAuth2PasswordBearer is a callable dependency that extracts tokens, and get_current_user is a dependency that validates tokens. These are injected into path operations using Depends().",
+        "expected_sources": ["06_dependencies.md", "07_security.md"],
+        "category": "multi-hop"
+    },
+    {
+        "id": 45,
+        "question": "How do I create a complete CRUD API with validation and proper responses?",
+        "expected_answer": "Use Pydantic models for request body validation and response models. Define path operations for each CRUD operation (POST for create, GET for read, PUT for update, DELETE for delete) with appropriate status codes and response_model.",
+        "expected_sources": ["04_request_body.md", "05_response_models.md"],
+        "category": "multi-hop"
+    },
+    {
+        "id": 46,
+        "question": "How do I combine middleware with error handling in FastAPI?",
+        "expected_answer": "Create middleware with @app.middleware('http') for request/response processing, and use @app.exception_handler for specific exception types. Middleware can catch exceptions or add headers, while exception handlers provide custom error responses.",
+        "expected_sources": ["08_middleware.md", "09_error_handling.md"],
+        "category": "multi-hop"
+    },
+    {
+        "id": 47,
+        "question": "How do I test protected endpoints that require authentication?",
+        "expected_answer": "Use app.dependency_overrides to override the authentication dependency in tests. Map the original auth dependency to a mock that returns a test user, then use TestClient to make requests.",
+        "expected_sources": ["07_security.md", "10_testing.md"],
+        "category": "multi-hop"
+    },
+    {
+        "id": 48,
+        "question": "What is the capital of France?",
+        "expected_answer": "UNANSWERABLE",
+        "expected_sources": [],
+        "category": "unanswerable"
+    },
+    {
+        "id": 49,
+        "question": "How do I connect FastAPI to a PostgreSQL database using SQLAlchemy?",
+        "expected_answer": "UNANSWERABLE",
+        "expected_sources": [],
+        "category": "unanswerable"
+    },
+    {
+        "id": 50,
+        "question": "What is the best pizza recipe?",
+        "expected_answer": "UNANSWERABLE",
+        "expected_sources": [],
+        "category": "unanswerable"
+    },
+    {
+        "id": 51,
+        "question": "How do I implement WebSocket connections in FastAPI?",
+        "expected_answer": "UNANSWERABLE",
+        "expected_sources": [],
+        "category": "unanswerable"
+    },
+    {
+        "id": 52,
+        "question": "What machine learning framework should I use with FastAPI?",
+        "expected_answer": "UNANSWERABLE",
+        "expected_sources": [],
+        "category": "unanswerable"
+    },
+    {
+        "id": 53,
+        "question": "How do I use GraphQL with FastAPI?",
+        "expected_answer": "UNANSWERABLE",
+        "expected_sources": [],
+        "category": "unanswerable"
+    },
+    {
+        "id": 54,
+        "question": "What programming language is FastAPI built with?",
+        "expected_answer": "FastAPI is built with Python. It requires Python 3.7+ and is based on standard Python type hints.",
+        "expected_sources": ["01_getting_started.md"],
+        "category": "factual"
+    },
+    {
+        "id": 55,
+        "question": "Can I use return type annotations instead of response_model?",
+        "expected_answer": "Yes, FastAPI supports using return type annotations. You can annotate the return type of your function (e.g., -> list[Item]) instead of using the response_model parameter.",
+        "expected_sources": ["05_response_models.md"],
+        "category": "factual"
+    },
+    {
+        "id": 56,
+        "question": "How do I add global dependencies to the entire FastAPI application?",
+        "expected_answer": "Pass the dependencies parameter when creating the FastAPI instance: app = FastAPI(dependencies=[Depends(verify_token)]).",
+        "expected_sources": ["06_dependencies.md"],
+        "category": "factual"
+    },
+    {
+        "id": 57,
+        "question": "What are the benefits of using response_model for security?",
+        "expected_answer": "response_model filters output data so sensitive fields like passwords can be excluded from responses by not including them in the response model.",
+        "expected_sources": ["05_response_models.md"],
+        "category": "conceptual"
+    },
+    {
+        "id": 58,
+        "question": "How does FastAPI use Python type hints?",
+        "expected_answer": "FastAPI uses Python type hints to provide editor support, validate request data, serialize response data, and generate API documentation automatically.",
+        "expected_sources": ["01_getting_started.md"],
+        "category": "conceptual"
+    },
+    {
+        "id": 59,
+        "question": "How do I add custom headers to an HTTP error response?",
+        "expected_answer": "Pass a headers dictionary to HTTPException: raise HTTPException(status_code=404, detail='Not found', headers={'X-Error': 'error message'}).",
+        "expected_sources": ["09_error_handling.md"],
+        "category": "factual"
+    },
+    {
+        "id": 60,
+        "question": "How do I implement JWT token authentication in FastAPI?",
+        "expected_answer": "Use the jose library (python-jose) to create and verify JWT tokens. Create an access token with jwt.encode() using a secret key and algorithm, and set an expiration time.",
+        "expected_sources": ["07_security.md"],
+        "category": "factual"
+    }
+]

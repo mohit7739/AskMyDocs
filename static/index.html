@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AskMyDocs — Production-grade RAG system with hybrid retrieval, cross-encoder re-ranking, and citation enforcement. Ask questions about your technical documentation.">
+    <title>AskMyDocs — Intelligent Document Q&A</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header__logo">
+                <div class="header__icon">📚</div>
+                <h1 class="header__title">AskMyDocs</h1>
+            </div>
+            <p class="header__subtitle">
+                Ask questions about your technical documentation. Powered by hybrid retrieval,
+                cross-encoder re-ranking, and citation-enforced generation.
+            </p>
+            <div class="header__badges">
+                <span class="badge"><span class="badge__dot"></span> BM25 + Semantic</span>
+                <span class="badge">⚡ Cross-Encoder Re-ranking</span>
+                <span class="badge">📎 Citation Enforced</span>
+            </div>
+        </header>
+
+        <!-- Search -->
+        <section class="search-area">
+            <div class="search-box" id="search-box">
+                <span class="search-box__icon">🔍</span>
+                <input
+                    type="text"
+                    class="search-box__input"
+                    id="query-input"
+                    placeholder="Ask a question about the documentation..."
+                    autocomplete="off"
+                    aria-label="Search query"
+                >
+                <button class="search-box__btn" id="search-btn" aria-label="Search">
+                    <span>Ask</span> →
+                </button>
+            </div>
+            <div class="ingest-bar">
+                <button class="ingest-btn" id="ingest-btn" aria-label="Ingest documents">
+                    ⟳ Ingest Documents
+                </button>
+            </div>
+        </section>
+
+        <!-- Results -->
+        <main class="results-area" id="results-area">
+            <!-- Empty State -->
+            <div class="empty-state" id="empty-state">
+                <div class="empty-state__icon">💡</div>
+                <h2 class="empty-state__title">Ask anything about the docs</h2>
+                <p class="empty-state__text">
+                    Type a question above or try one of these examples:
+                </p>
+                <div class="empty-state__examples" id="example-queries">
+                    <div class="example-query" data-query="How do I define path parameters in FastAPI?">
+                        <span class="example-query__icon">→</span>
+                        How do I define path parameters in FastAPI?
+                    </div>
+                    <div class="example-query" data-query="What is dependency injection and how does FastAPI handle it?">
+                        <span class="example-query__icon">→</span>
+                        What is dependency injection and how does FastAPI handle it?
+                    </div>
+                    <div class="example-query" data-query="How do I add authentication to my FastAPI application?">
+                        <span class="example-query__icon">→</span>
+                        How do I add authentication to my FastAPI application?
+                    </div>
+                    <div class="example-query" data-query="What testing tools can I use with FastAPI?">
+                        <span class="example-query__icon">→</span>
+                        What testing tools can I use with FastAPI?
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State (hidden by default) -->
+            <div class="loading" id="loading-state" style="display: none;">
+                <div class="loading__spinner"></div>
+                <div class="loading__steps">
+                    <div class="loading__step" id="step-retrieve">🔎 Running hybrid retrieval (BM25 + Semantic)...</div>
+                    <div class="loading__step" id="step-rerank">⚡ Re-ranking with cross-encoder...</div>
+                    <div class="loading__step" id="step-generate">✍️ Generating citation-enforced answer...</div>
+                </div>
+            </div>
+
+            <!-- Answer (hidden by default) -->
+            <div id="answer-container" style="display: none;"></div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>AskMyDocs — Production-Grade RAG System</p>
+            <p>Hybrid Retrieval · Cross-Encoder Re-ranking · Citation Enforcement</p>
+        </footer>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
