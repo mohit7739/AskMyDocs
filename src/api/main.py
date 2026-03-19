@@ -19,6 +19,7 @@ from src.api.models import (
 )
 from src.generation.generator import RAGGenerator
 from src.ingestion.pipeline import IngestionPipeline
+from src.observability.tracer import global_tracer
 
 logger = logging.getLogger(__name__)
 
@@ -85,13 +86,34 @@ async def query_documents(request: QueryRequest):
     try:
         result = _generator.generate(request.question)
     except FileNotFoundError as e:
+        global_tracer.log_trace(
+            endpoint="/api/query",
+            question=request.question,
+            answer="", latency=0, is_error=True, error_msg=str(e)
+        )
         raise HTTPException(
             status_code=400,
             detail=f"No documents indexed yet. Run /api/ingest first. ({e})",
         )
     except Exception as e:
+        global_tracer.log_trace(
+            endpoint="/api/query",
+            question=request.question,
+            answer="", latency=0, is_error=True, error_msg=str(e)
+        )
         logger.error(f"Query failed: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail=f"Query failed: {str(e)}")
+
+    global_tracer.log_trace(
+        endpoint="/api/query",
+        question=request.question,
+        answer=result.answer,
+        latency=result.latency,
+        prompt_tokens=result.prompt_tokens,
+        completion_tokens=result.completion_tokens,
+        cost=result.cost,
+        extra={"citations": len(result.citations)}
+    )
 
     return QueryResponse(
         answer=result.answer,
@@ -150,6 +172,23 @@ async def get_stats():
         total_chunks_indexed=count,
         collection_name="documents",
     )
+
+
+@app.get("/api/traces")
+async def get_traces(limit: int = 50):
+    """View recent traces for observability."""
+    import json
+    traces = []
+    if global_tracer.log_path.exists():
+        try:
+            with open(global_tracer.log_path, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+                for line in lines[-limit:]:
+                    if line.strip():
+                        traces.append(json.loads(line))
+        except Exception:
+            pass
+    return list(reversed(traces))  # newest first
 
 
 # Serve static files (frontend) - Note: Vercel routes /static/ directly via vercel.json

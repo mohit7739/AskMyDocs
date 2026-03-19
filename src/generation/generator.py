@@ -1,6 +1,7 @@
 """Citation-enforced RAG generation pipeline using Groq."""
 
 import re
+import time
 from dataclasses import dataclass, field
 
 from groq import Groq
@@ -33,6 +34,11 @@ class GenerationResult:
     is_declined: bool = False
     retrieved_chunks: list[dict] = field(default_factory=list)
     reranked_chunks: list[dict] = field(default_factory=list)
+    latency: float = 0.0
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+    total_tokens: int = 0
+    cost: float = 0.0
 
 
 class RAGGenerator:
@@ -93,6 +99,8 @@ class RAGGenerator:
         3. Citation-enforced LLM generation via Groq
         4. Post-processing and validation
         """
+        start_time = time.perf_counter()
+        
         # Step 1: Hybrid retrieval
         retrieved = self.retriever.search(question)
 
@@ -106,6 +114,7 @@ class RAGGenerator:
                 is_declined=True,
                 retrieved_chunks=retrieved,
                 reranked_chunks=[],
+                latency=time.perf_counter() - start_time,
             )
 
         # Step 3: Generate answer with citations via Groq
@@ -126,6 +135,20 @@ class RAGGenerator:
         )
 
         raw_answer = response.choices[0].message.content.strip()
+        
+        latency = time.perf_counter() - start_time
+        prompt_tokens = 0
+        completion_tokens = 0
+        total_tokens = 0
+        cost = 0.0
+        
+        if hasattr(response, "usage") and response.usage:
+            prompt_tokens = response.usage.prompt_tokens or 0
+            completion_tokens = response.usage.completion_tokens or 0
+            total_tokens = response.usage.total_tokens or 0
+            # Cost calculation based on Groq Llama-3.3-70b-versatile
+            # $0.59 per 1M input tokens, $0.79 per 1M output tokens
+            cost = (prompt_tokens / 1_000_000) * 0.59 + (completion_tokens / 1_000_000) * 0.79
 
         # Step 4: Post-process
         if self._is_declined(raw_answer):
@@ -134,6 +157,11 @@ class RAGGenerator:
                 is_declined=True,
                 retrieved_chunks=retrieved,
                 reranked_chunks=reranked,
+                latency=latency,
+                prompt_tokens=prompt_tokens,
+                completion_tokens=completion_tokens,
+                total_tokens=total_tokens,
+                cost=cost,
             )
 
         citations = self._extract_citations(raw_answer, reranked)
@@ -144,4 +172,9 @@ class RAGGenerator:
             is_declined=False,
             retrieved_chunks=retrieved,
             reranked_chunks=reranked,
+            latency=latency,
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
+            total_tokens=total_tokens,
+            cost=cost,
         )

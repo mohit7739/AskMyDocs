@@ -14,6 +14,12 @@ CITATION_PRECISION_THRESHOLD = 0.70
 CITATION_RECALL_THRESHOLD = 0.60
 ABSTENTION_ACCURACY_THRESHOLD = 0.80
 
+# Performance/Operational thresholds
+P50_LATENCY_THRESHOLD = 4.0
+P95_LATENCY_THRESHOLD = 8.0
+COST_PER_REQUEST_THRESHOLD = 0.01
+FAILURE_RATE_THRESHOLD = 0.10
+
 
 @pytest.fixture(scope="module")
 def eval_report():
@@ -53,6 +59,34 @@ class TestQualityGates:
         assert eval_report.abstention_accuracy >= ABSTENTION_ACCURACY_THRESHOLD, (
             f"Abstention accuracy {eval_report.abstention_accuracy:.4f} "
             f"< threshold {ABSTENTION_ACCURACY_THRESHOLD}"
+        )
+
+    def test_p50_latency(self, eval_report):
+        """P50 Latency must be below the maximum threshold."""
+        assert eval_report.p50_latency <= P50_LATENCY_THRESHOLD, (
+            f"P50 Latency {eval_report.p50_latency:.4f}s "
+            f"> threshold {P50_LATENCY_THRESHOLD}s"
+        )
+
+    def test_p95_latency(self, eval_report):
+        """P95 Latency must be below the maximum threshold."""
+        assert eval_report.p95_latency <= P95_LATENCY_THRESHOLD, (
+            f"P95 Latency {eval_report.p95_latency:.4f}s "
+            f"> threshold {P95_LATENCY_THRESHOLD}s"
+        )
+
+    def test_cost_per_request(self, eval_report):
+        """Average cost per request must be below the maximum threshold."""
+        assert eval_report.avg_cost <= COST_PER_REQUEST_THRESHOLD, (
+            f"Average cost ${eval_report.avg_cost:.6f} "
+            f"> threshold ${COST_PER_REQUEST_THRESHOLD}"
+        )
+
+    def test_failure_rate(self, eval_report):
+        """Failure rate must be below the maximum threshold."""
+        assert eval_report.failure_rate <= FAILURE_RATE_THRESHOLD, (
+            f"Failure rate {eval_report.failure_rate:.4f} "
+            f"> threshold {FAILURE_RATE_THRESHOLD}"
         )
 
     def test_no_empty_results(self, eval_report):
